@@ -24,6 +24,7 @@ SECRET_KEY = 'django-insecure-e9#^slj)*@jzp!5m$a$!r5=mr-t79jyh-t2!j)ezu4a3f&6e$z
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#ALLOWED_HOSTS = ['your_domain.com', 'your_ip_address','127.0.0.1']
 
 ALLOWED_HOSTS = []
 
@@ -37,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'Users',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +126,14 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+#firebase
+import firebase_admin
+from firebase_admin import credentials
+
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+
+
+
