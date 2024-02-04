@@ -12,13 +12,18 @@ from . import views
 from .views import signup_view
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
     # Here we are assigning the path of our url
-    path('', views.signIn),
-    path('postsignIn/', views.postsignIn,name='postsignIn'),
-    #path('signUp/', views.signUp, name="signup"),
-    path('logout/', views.logout, name="log"),
+    #path('', views.signIn),
+    #path('postsignIn/', views.postsignIn,name='postsignIn'),
+    ##path('signUp/', views.signUp, name="signup"),
+    #path('logout/', views.logout, name="log"),
     #path('postsignUp/', views.postsignUp,name='postsignUp'),
-    path('signup/',signup_view,name='signup'),
+    #path('signup/',signup_view,name='signup'),
     
+    path('',views.home,name='home'),
+    path('login/',views.signIn),
+    path('postsignIn/', views.postsignIn,name='postsignIn'),
+    path('signup/',signup_view,name='signup'),
+    path('logout/', views.logout, name="log"),
 ]

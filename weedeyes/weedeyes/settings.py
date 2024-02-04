@@ -12,8 +12,13 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
+import firebase_admin
+from firebase_admin import db
+from firebase_admin import credentials
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -45,12 +50,22 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    #'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+AUTHENTICATION_BACKENDS = [
+    'users.authentication_backends.FirebaseAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',  # 기본 ModelBackend 유지
+]
+#SESSION_ENGINE = 'django.contrib.sessions.backends.cache'  # 또는 'django.contrib.sessions.backends.cached_db'
+#SESSION_COOKIE_NAME = 'sessionid'  # 쿠키 이름 설정
+#SESSION_SAVE_EVERY_REQUEST = True  # 매 요청마다 세션 저장
+#SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # 브라우저 닫을 때 세션 만료
+#SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 ROOT_URLCONF = 'weedeyes.urls'
 
@@ -76,7 +91,35 @@ WSGI_APPLICATION = 'weedeyes.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
+
+import os
+import pyrebase
+from firebase_admin import credentials
+#from firebase import Firebase
+
+
+config={
+    'apiKey': "AIzaSyC05973cMkAo54VjVdQrAzlqM9t0nLt5aI",
+    'authDomain': "weedeyes-3d4ca.firebaseapp.com",
+    'databaseURL': "https://weedeyes-3d4ca-default-rtdb.asia-southeast1.firebasedatabase.app",
+    'projectId': "weedeyes-3d4ca",
+    'storageBucket': "weedeyes-3d4ca.appspot.com",
+    'messagingSenderId': "547490552512",
+    'appId': "1:547490552512:web:e1a1ae80bf6010894bab25",
+    'measurementId': "G-2CRVDZ8G59"
+}
+
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
+database = firebase.database()
+
+cred = credentials.Certificate("serviceAccountKey.json")
+
+firebase_admin.initialize_app(cred,{
+    'databaseURL':"https://weedeyes-3d4ca-default-rtdb.asia-southeast1.firebasedatabase.app"
+})
+
+DATABASES={
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
@@ -84,6 +127,20 @@ DATABASES = {
 }
 
 
+#SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+#SESSION_ENGINE = 'django.contrib.sessions.backends.firebase'
+'''
+config={
+    'apiKey': "AIzaSyC05973cMkAo54VjVdQrAzlqM9t0nLt5aI",
+    'authDomain': "weedeyes-3d4ca.firebaseapp.com",
+    'databaseURL': "https://weedeyes-3d4ca-default-rtdb.asia-southeast1.firebasedatabase.app",
+    'projectId': "weedeyes-3d4ca",
+    'storageBucket': "weedeyes-3d4ca.appspot.com",
+    'messagingSenderId': "547490552512",
+    'appId': "1:547490552512:web:e1a1ae80bf6010894bab25",
+    'measurementId': "G-2CRVDZ8G59"
+}
+'''
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -129,11 +186,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 #firebase
-import firebase_admin
-from firebase_admin import credentials
+# settings.py
 
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+
+#import firebase_admin
+#from firebase_admin import db
+#from firebase_admin import credentials
+
+#cred = credentials.Certificate("serviceAccountKey.json")
+'''
+firebase_admin.initialize_app(cred,{
+    'databaseURL':"https://weedeyes-3d4ca-default-rtdb.asia-southeast1.firebasedatabase.app"
+})
+dir=db.reference()
+
+if not firebase_admin._apps:
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': "https://weedeyes-3d4ca-default-rtdb.asia-southeast1.firebasedatabase.app"
+    })
+    '''
+#dir=db.reference()
+
+
+#firebase_admin.initialize_app(cred)
 
 
 
