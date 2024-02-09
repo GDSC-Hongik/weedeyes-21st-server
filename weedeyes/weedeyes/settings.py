@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'Users',
+    'report',
+    #'firebase_auth',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +68,16 @@ AUTHENTICATION_BACKENDS = [
 #SESSION_SAVE_EVERY_REQUEST = True  # 매 요청마다 세션 저장
 #SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # 브라우저 닫을 때 세션 만료
 #SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+
+# Django의 세션 관련 설정을 비활성화
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Firebase를 사용하여 사용자 인증에 대한 백엔드 설정
+#AUTHENTICATION_BACKENDS = [
+#    'users.authentication_backends.FirebaseAuthenticationBackend',
+#]
 
 ROOT_URLCONF = 'weedeyes.urls'
 
@@ -94,10 +106,41 @@ WSGI_APPLICATION = 'weedeyes.wsgi.application'
 
 import os
 import pyrebase
+import firebase_admin
 from firebase_admin import credentials
 #from firebase import Firebase
 
+'''
+if not firebase_admin._apps:
+    """SETUP FIREBASE CREDENTIALS"""
+    cred_info = {
+        "type": os.environ.get('FIREBASE_ACCOUNT_TYPE'),
+        "project_id": os.environ.get('FIREBASE_PROJECT_ID'),
+        "private_key_id": os.environ.get('FIREBASE_PRIVATE_KEY_ID'),
+        "private_key": os.environ.get('FIREBASE_PRIVATE_KEY').replace('\\n', '\n'),
+        "client_email": os.environ.get('FIREBASE_CLIENT_EMAIL'),
+        "client_id": os.environ.get('FIREBASE_CLIENT_ID'),
+        "auth_uri": os.environ.get('FIREBASE_AUTH_URI'),
+        "token_uri": os.environ.get('FIREBASE_TOKEN_URI'),
+        "auth_provider_x509_cert_url": os.environ.get('FIREBASE_AUTH_PROVIDER_X509_CERT_URL'),
+        "client_x509_cert_url": os.environ.get('FIREBASE_CLIENT_X509_CERT_URL')
+    }
 
+    default_app = firebase_admin.initialize_app(credentials.Certificate(cred_info))
+
+    pyrebase_config = {
+        "apiKey": os.environ.get('FIREBASE_CLIENT_API_KEY'),
+        "authDomain": f"{os.environ.get('FIREBASE_PROJECT_ID')}.firebaseapp.com",
+        "databaseURL": "",
+        "storageBucket": f"{os.environ.get('FIREBASE_PROJECT_ID')}.appspot.com",
+        "serviceAccount": cred_info
+    }
+
+    pyrebase_app = pyrebase.initialize_app(pyrebase_config)
+
+'''
+
+'''
 config={
     'apiKey': "AIzaSyC05973cMkAo54VjVdQrAzlqM9t0nLt5aI",
     'authDomain': "weedeyes-3d4ca.firebaseapp.com",
@@ -119,6 +162,7 @@ firebase_admin.initialize_app(cred,{
     'databaseURL':"https://weedeyes-3d4ca-default-rtdb.asia-southeast1.firebasedatabase.app"
 })
 
+'''
 DATABASES={
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -129,18 +173,7 @@ DATABASES={
 
 #SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 #SESSION_ENGINE = 'django.contrib.sessions.backends.firebase'
-'''
-config={
-    'apiKey': "AIzaSyC05973cMkAo54VjVdQrAzlqM9t0nLt5aI",
-    'authDomain': "weedeyes-3d4ca.firebaseapp.com",
-    'databaseURL': "https://weedeyes-3d4ca-default-rtdb.asia-southeast1.firebasedatabase.app",
-    'projectId': "weedeyes-3d4ca",
-    'storageBucket': "weedeyes-3d4ca.appspot.com",
-    'messagingSenderId': "547490552512",
-    'appId': "1:547490552512:web:e1a1ae80bf6010894bab25",
-    'measurementId': "G-2CRVDZ8G59"
-}
-'''
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -184,6 +217,8 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_URL = '/users/login/'
+
 
 #firebase
 # settings.py
@@ -193,22 +228,39 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #from firebase_admin import db
 #from firebase_admin import credentials
 
-#cred = credentials.Certificate("serviceAccountKey.json")
-'''
-firebase_admin.initialize_app(cred,{
-    'databaseURL':"https://weedeyes-3d4ca-default-rtdb.asia-southeast1.firebasedatabase.app"
-})
-dir=db.reference()
-
-if not firebase_admin._apps:
-    firebase_admin.initialize_app(cred, {
-        'databaseURL': "https://weedeyes-3d4ca-default-rtdb.asia-southeast1.firebasedatabase.app"
-    })
-    '''
-#dir=db.reference()
 
 
 #firebase_admin.initialize_app(cred)
 
+
+if not firebase_admin._apps:
+    """SETUP FIREBASE CREDENTIALS"""
+    cred_info = {
+        "type": os.environ.get('FIREBASE_ACCOUNT_TYPE'),
+        "project_id": os.environ.get('FIREBASE_PROJECT_ID'),
+        "private_key_id": os.environ.get('FIREBASE_PRIVATE_KEY_ID'),
+        "private_key": os.environ.get('FIREBASE_PRIVATE_KEY').replace('\\n', '\n'),
+        "client_email": os.environ.get('FIREBASE_CLIENT_EMAIL'),
+        "client_id": os.environ.get('FIREBASE_CLIENT_ID'),
+        "auth_uri": os.environ.get('FIREBASE_AUTH_URI'),
+        "token_uri": os.environ.get('FIREBASE_TOKEN_URI'),
+        "auth_provider_x509_cert_url": os.environ.get('FIREBASE_AUTH_PROVIDER_X509_CERT_URL'),
+        "client_x509_cert_url": os.environ.get('FIREBASE_CLIENT_X509_CERT_URL')
+    }
+    #credential=credentials.Certificate(cred_info)
+    #default_app = firebase_admin.initialize_app(credential)
+    default_app = firebase_admin.initialize_app(credentials.Certificate(cred_info))
+
+    pyrebase_config = {
+        "apiKey": os.environ.get('FIREBASE_CLIENT_API_KEY'),
+        "authDomain": f"{os.environ.get('FIREBASE_PROJECT_ID')}.firebaseapp.com",
+        "databaseURL": "",
+        "storageBucket": f"{os.environ.get('FIREBASE_PROJECT_ID')}.appspot.com",
+        "serviceAccount": cred_info
+    }
+    
+
+    pyrebase_app = pyrebase.initialize_app(pyrebase_config)
+    
 
 

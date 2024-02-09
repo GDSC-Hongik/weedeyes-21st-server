@@ -7,9 +7,11 @@
 #]
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from . import views
 from .views import signup_view
+
+#app_name = 'users'
 
 urlpatterns = [
     #path('admin/', admin.site.urls),
@@ -22,8 +24,11 @@ urlpatterns = [
     #path('signup/',signup_view,name='signup'),
     
     path('',views.home,name='home'),
-    path('login/',views.signIn),
-    path('postsignIn/', views.postsignIn,name='postsignIn'),
+    path('login/',views.postsignIn,name='login'),
     path('signup/',signup_view,name='signup'),
     path('logout/', views.logout, name="log"),
+    #path('login/',views.signIn,name='login'),
+    #path('postsignIn/', views.postsignIn,name='postsignIn'),
+   
 ]
+
