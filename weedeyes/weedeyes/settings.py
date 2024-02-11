@@ -196,8 +196,4 @@ if not firebase_admin._apps:
         "serviceAccount": cred_info
     }
     
-
     pyrebase_app = pyrebase.initialize_app(pyrebase_config)
-    
-
-
