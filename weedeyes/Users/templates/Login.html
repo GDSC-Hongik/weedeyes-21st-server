@@ -14,8 +14,9 @@
 </head>
 <body>
     
-<form method="post" action="{% url 'postsignIn' %}">
+<form method="post" action="{% url 'login' %}?next={{ next }}">
     {% csrf_token %}
+    
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required>
     <br>

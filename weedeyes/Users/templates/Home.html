@@ -1,8 +1,36 @@
+<!--Home.html -->
+<!--
 <body>
     <br><br>
     <div>
-        
+    안녕하세요!
     <button type="button" onclick="location.href='{% url 'log' %}' ">Logout</button>
+
     </div>
 </body>
 
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to Home Page</h1>
+    
+    <!-- 신고글 작성 버튼 
+    <a href="{% url 'report:post_report' %}">신고글 작성</a>-->
+
+    <!-- 로그아웃 버튼 -->
+    {% if request.session.firebase_id_token %}
+    <form action="{% url 'log' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">로그아웃</button>
+    </form>
+    {%else%}
+    로그인
+    {%endif%}
+</body>
+</html>

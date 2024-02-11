@@ -2,7 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+import dotenv
 
 def main():
     """Run administrative tasks."""
@@ -19,4 +19,6 @@ def main():
 
 
 if __name__ == '__main__':
+    env_path = dotenv.read_dotenv()
+    dotenv.read_dotenv(env_path)
     main()
